@@ -109,6 +109,15 @@ class UI{
                 </div>
         `;
         cartContent.appendChild(div);
+        fetch('http://127.0.0.1:3000/cart_items', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({product_id: item.id,
+            quantity: item.quantity,
+        carts_id: 1})
+        }).then(response => response.json()).then(newCartItem => {
+            console.log(newCartItem)
+        });
 
     }
     showCart(){
@@ -177,12 +186,16 @@ class UI{
         this.hideCart();
     }
     removeItem(id){
+        //fetch('http://127.0.0.1:3000/cart_items', {
+        //    method: 'DELETE',
+        //}).then(res => res.text()) .then(res => console.log(res));
         cart = cart.filter(item => item.id != id);
         this.setCartValues(cart);
         Storage.saveCart(cart);
         let button = this.getSingleButton(id);
         button.disabled = false;
         button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to cart`
+        
     }
     getSingleButton(id){
         return buttonsDOM.find(button => button.dataset.id == id);
@@ -202,11 +215,7 @@ class Storage{
     };
     static saveCart(cart){
         localStorage.setItem('cart',JSON.stringify(cart));
-        fetch('cart_items#create', {
-            method: 'POST',
-            body: cart
-            
-        });
+        
     };
     static getCart(){
         return localStorage.getItem('cart')?JSON.parse(localStorage.getItem('cart')) : [];

@@ -3,14 +3,15 @@
 class CartItemsController < ApplicationController
   def create
     @cart_item = CartItem.create(cart_item_params)
-    json_response(@cart_item, :created)
+    render json: @cart_item
   end
 
-  def json_response(object, status = :ok)
-    render json: object, status: status
+  def delete
+    @cart_item = CartItem.find_by_id(:id)
+    @cart_item.destroy
   end
 
   def cart_item_params
-    params.permit(:product_id, :cart_id, :quantity)
+    params.permit(:product_id, :quantity, :carts_id)
   end
 end
