@@ -2,12 +2,16 @@
 const cartBtn = document.querySelector('.cart-btn');
 const closeCartBtn = document.querySelector('.close-cart');
 const clearCartBtn = document.querySelector('.clear-cart');
+const submitCartBtn = document.querySelector('.submit-cart');
 const cartDom = document.querySelector('.cart');
 const cartOverlay = document.querySelector('.cart-overlay');
 const cartItems = document.querySelector('.cart-items');
 const cartTotal = document.querySelector('.cart-total');
 const cartContent = document.querySelector('.cart-content');
 const productsDOM = document.querySelector('.products-center');
+const checkoutDom = document.querySelector('.checkout');
+const checkoutOverlay = document.querySelector('.checkout-overlay');
+
 
 //cart
 let cart = [];
@@ -19,13 +23,14 @@ class Products{
         try {
             let result = await fetch("http://127.0.0.1:3000/products/");
             let products = await result.json();
+            console.log(products)
             return products; 
         } catch (error) {
             console.log(error);
         }
         
     }
-
+    
 }
 
 //ui 
@@ -74,6 +79,7 @@ class UI{
                     this.setCartValues(cart);
                     // dsiplay cart item, upload json back to api to store in cart tabele
                     this.addCartitem(cartItem)
+                    this.addItemToTable(cartItem);
                     //show cart
                     this.showCart();
 
@@ -109,16 +115,20 @@ class UI{
                 </div>
         `;
         cartContent.appendChild(div);
-        fetch('http://127.0.0.1:3000/cart_items', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({product_id: item.id,
-            quantity: item.quantity,
-        carts_id: 1})
-        }).then(response => response.json()).then(newCartItem => {
-            console.log(newCartItem)
-        });
-
+        
+    }
+    addItemToTable(item){
+        
+        fetch('http://127.0.0.1:3000/carts', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json',
+                        "Accept": "application/json"},
+                mode: 'cors',
+                body: JSON.stringify(item)
+            }).then(response => response.json())
+            .then(response => {
+                console.log(response)
+            });
     }
     showCart(){
         cartOverlay.classList.add('transparentBcg');
@@ -144,12 +154,21 @@ class UI{
             this.clearCart();
 
         })
+        submitCartBtn.addEventListener('click', ()=> {
+            fetch("http://127.0.0.1:3000/carts/") .then(function(resp) {
+                return resp.json();
+                }) .then(function(resp) {
+            console.log(resp)
+            });
+            
+        })
         cartContent.addEventListener('click', event=>{
             if(event.target.classList.contains('remove-item')){
                 let removeItem = event.target;
                 let id = removeItem.dataset.id;
                 cartContent.removeChild(removeItem.parentElement.parentElement);
                 this.removeItem(id);
+                
             }
             else if(event.target.classList.contains('fa-chevron-up')){
                 let addAmount = event.target;
@@ -183,12 +202,11 @@ class UI{
         while(cartContent.children.length > 0){
             cartContent.removeChild(cartContent.children[0])
         }
+        
         this.hideCart();
     }
     removeItem(id){
-        //fetch('http://127.0.0.1:3000/cart_items', {
-        //    method: 'DELETE',
-        //}).then(res => res.text()) .then(res => console.log(res));
+        
         cart = cart.filter(item => item.id != id);
         this.setCartValues(cart);
         Storage.saveCart(cart);
@@ -196,9 +214,40 @@ class UI{
         button.disabled = false;
         button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to cart`
         
+
     }
     getSingleButton(id){
         return buttonsDOM.find(button => button.dataset.id == id);
+    }
+    getCheckout(cart){
+        const div = document.createElement('div');
+        div.classList.add('checkout-item');
+        div.innerHTML = `
+            <img src="${item.image}" alt="S600">
+                <div>
+                    <h4>${item.name}</h4>
+                    <h5>$${item.price}</h5>
+                    <span class="remove-item" data-id=${item.id}>remove</span>
+                </div>
+                <div>
+                    <i class="fas fa-chevron-up" data-id=${item.id}></i>
+                    <p class="item-amount">${item.quantity}</p>
+                    <i class="fas fa-chevron-down" data-id=${item.id}></i>
+                </div>
+        `;
+    }
+    showCheckout(){
+        checkoutOverlay.classList.add('transparentBcg');
+        checkoutDom.classList.add('showCart');
+        
+
+    }
+    populateCheckout(cart){
+        cart.forEach(item => this.addCheckoutitem(item));
+    }
+    hideCheckout(){
+        checkoutOverlay.classList.remove('transparentBcg');
+        checkoutDom.classList.remove('showCart');
     }
 }
 
@@ -231,3 +280,4 @@ products.getProducts().then(products => {
     ui.getBagButtons();
     ui.cartLogic();
 });
+console.log("hi");

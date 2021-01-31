@@ -74,7 +74,7 @@ body {
   margin-bottom: 3rem;
 }
 .banner-btn {
-  padding: 1rem 3rem;
+  padding: 10px 3rem;
   text-transform: uppercase;
   letter-spacing: var(--mainSpacing);
   font-size: 1rem;
@@ -84,6 +84,7 @@ body {
   transition: var(--mainTransition);
   cursor: pointer;
 }
+
 .banner-btn:hover {
   background: transparent;
   color: var(--primaryColor);
@@ -247,6 +248,85 @@ body {
   text-align: center;
 }
 .cart-footer h3 {
+  text-transform: capitalize;
+  margin-bottom: 1rem;
+}
+
+.checkout-overlay {
+  position: center;
+  width: 40%;
+  height: 40%;
+  transition: var(--mainTransition);
+  background: rgb(240, 157, 81, 0.5);
+  z-index: 2;
+  visibility: hidden;
+}
+
+.checkout {
+  position: conter;
+  width: 40%;
+  height: 40%;
+  overflow: scroll;
+  z-index: 3;
+  background: rgb(231, 226, 221);
+  padding: 1.5rem;
+  transition: var(--mainTransition);
+  transform: translateX(100%);
+}
+.showCheckout {
+  transform: translateX(0);
+}
+.transparentBcg {
+  visibility: visible;
+}
+@media screen and (min-width: 768px) {
+  .checkout {
+    width: 30vw;
+    min-width: 450px;
+  }
+}
+
+.close-ccheckout {
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+.checkout h2 {
+  text-transform: capitalize;
+  text-align: center;
+  letter-spacing: var(--mainSpacing);
+  margin-bottom: 2rem;
+}
+
+.checkout-item {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr auto;
+  grid-column-gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.checkout-item img {
+  width: 75px;
+  height: 75px;
+}
+.checkout-item h4 {
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  letter-spacing: var(--mainSpacing);
+}
+.checkout-item h5 {
+  margin: 0.5rem 0;
+  letter-spacing: var(--mainSpacing);
+}
+.item-amount {
+  text-align: center;
+}
+
+.checkout-footer {
+  margin-top: 2rem;
+  letter-spacing: var(--mainSpacing);
+  text-align: center;
+}
+.checkout-footer h3 {
   text-transform: capitalize;
   margin-bottom: 1rem;
 }
